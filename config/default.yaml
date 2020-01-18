@@ -1,5 +1,6 @@
 ---
 debug: true
+annotation: career.evrone.com/service
 rsa:
   bits: 2048
 secrets:

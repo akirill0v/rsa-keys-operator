@@ -21,9 +21,6 @@ use crate::*;
 
 pub type Deployment = Object<DeploymentSpec, DeploymentStatus>;
 
-const K8S_METADATA_ANNOTATION_KEY: &str = "career.evrone.com/service";
-const K8S_RSA_BITS: u32 = 2048;
-
 /// Metrics exposed to /metrics
 #[derive(Clone)]
 pub struct Metrics {
@@ -115,7 +112,7 @@ impl Controller {
                 info!("Deployment {:?} added...", deploy.metadata.name);
                 let service_name = self.get_service_name(deploy.clone())?;
 
-                let generator = rsa_generator::Generator::new(K8S_RSA_BITS, service_name)?;
+                let generator = rsa_generator::Generator::new(self.config.rsa.bits, service_name)?;
                 self.store.handle_add(deploy.metadata.namespace.clone(), generator).await?;
 
                 if self.config.volumes.mount {
@@ -145,7 +142,7 @@ impl Controller {
     }
 
     fn get_service_name(&self, deployment: Deployment) -> Result<String> {
-        deployment.metadata.annotations.clone().get(K8S_METADATA_ANNOTATION_KEY)
+        deployment.metadata.annotations.clone().get(&self.config.annotation)
             .ok_or_else(|| format!("deployment '{}' is not evrone service", deployment.metadata.name.clone()))
             .map_err(anyhow::Error::msg)
             .map(|_| deployment.metadata.name)

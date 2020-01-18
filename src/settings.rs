@@ -4,6 +4,7 @@ use config::{ConfigError, Config, File, Environment};
 #[derive(Debug, Deserialize, Clone)]
 pub struct Settings {
     pub debug: bool,
+    pub annotation: String,
     pub rsa: Rsa,
     pub secrets: Secrets,
     pub volumes: Volumes,
