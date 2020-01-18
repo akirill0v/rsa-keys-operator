@@ -1,0 +1,12 @@
+---
+debug: true
+rsa:
+  bits: 2048
+secrets:
+  public_name: public-rsa-tokens
+volumes:
+  mount: true
+  public:
+    path: /var/keys/public
+  private:
+    path: /var/keys/private

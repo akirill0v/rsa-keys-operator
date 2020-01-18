@@ -1,0 +1,38 @@
+[package]
+name = "key_generator"
+version = "0.1.0"
+authors = ["Aleksander Kirillov <kirillov@evrone.com>"]
+edition =  "2018"
+
+[[bin]]
+doc = false
+name = "key_generator"
+path = "src/main.rs"
+
+[lib]
+name = "key_generator"
+path = "src/lib.rs"
+
+[dependencies]
+config = "0.10.1"
+base64 = "0.11.0"
+kube = { version = "0.23.0", features=["openapi"] }
+k8s-openapi = { version = "0.6.0", default-features = false, features = ["v1_16"] }
+actix-web = "2.0.0"
+actix-rt = "1.0.0"
+serde = "1.0.104"
+serde_derive = "1.0.104"
+serde_json = "1.0.44"
+anyhow = "1.0.26"
+log = "0.4.8"
+env_logger = "0.7.1"
+chrono = { version = "0.4.10", features = ["serde"] }
+prometheus = "0.7.0"
+futures = "0.3.1"
+tokio = "0.2.9"
+openssl = "*"
+
+[profile.release]
+opt-level = 'z'  # Optimize for size.
+lto = true
+codegen-units = 1

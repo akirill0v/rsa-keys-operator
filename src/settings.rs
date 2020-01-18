@@ -1,0 +1,41 @@
+use std::env;
+use config::{ConfigError, Config, File, Environment};
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Settings {
+    pub debug: bool,
+    pub rsa: Rsa,
+    pub secrets: Secrets,
+    pub volumes: Volumes,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Rsa {
+    pub bits: u32,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Secrets {
+    pub public_name: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Volumes {
+    pub mount: bool,
+    pub public: Volume,
+    pub private: Volume,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Volume {
+    pub path: String,
+}
+
+impl Settings {
+    pub fn new(path: &str) -> Result<Self, ConfigError> {
+        let mut s = Config::new();
+        s.merge(File::with_name(path).required(true))?;
+        s.merge(Environment::with_prefix("app"))?;
+        s.try_into()
+    }
+}
