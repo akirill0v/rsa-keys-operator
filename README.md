@@ -1,5 +1,7 @@
 # Rsa keys generator
 
+![](https://github.com/akirill0v/rsa-keys-operator/workflows/CI/badge.svg)
+
 The operator generates private and public RSA keys for the service, mount them in service containers.
 
 ## Getting Started
