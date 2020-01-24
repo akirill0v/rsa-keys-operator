@@ -10,7 +10,7 @@ The operator generates private and public RSA keys for the service, mount them i
 
 Keyman operator can ve installed via Helm(v3) using chart from this repository. To install the chart with release name `keyman`:
 
-```terminal
+```console
 git clone https://github.com/akirill0v/rsa-keys-operator.git
 helm install keyman ./charts/keyman/ --namespace kube-system
 ```

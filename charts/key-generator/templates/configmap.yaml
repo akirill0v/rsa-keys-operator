@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "key_generator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "key_generator.labels" . | nindent 4 }}
+data:
+  default.yaml: |
+    {{- with .Values.config }}
+{{ toYaml . | indent 6 }}
+    {{- end }}

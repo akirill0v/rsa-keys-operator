@@ -1,0 +1,11 @@
+apiVersion: v2
+description: 'RSA keypair generator'
+name: key-generator
+version: v0.1.0
+appVersion: v0.1.0
+home: https://github.com/akirill0v/rsa-keys-operator
+sources:
+  - https://github.com/akirill0v/rsa-keys-operator
+mainrainers:
+  - name: Aleksandr Kirillov
+    email: kirillov@evrone.com

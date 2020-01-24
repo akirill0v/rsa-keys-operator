@@ -1,0 +1,49 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "key_generator.fullname" . }}
+  labels:
+    {{- include "key_generator.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - secrets
+  verbs: ["create", "delete", "get", "patch", "list", "watch"]
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs: ["get", "list", "patch", "update", "watch"]
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs: ["*"]
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs: ["create", "delete", "get", "update", "list", "patch"]
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs: ["create", "get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "key_generator.fullname" . }}
+  labels:
+    {{- include "key_generator.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "key_generator.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "key_generator.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
