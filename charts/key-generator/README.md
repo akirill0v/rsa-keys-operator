@@ -22,8 +22,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the KeyGenerator chart and their default values.
 
 | Parameter                  | Description                                                                                                                   | Default                   |
-|                            |                                                                                                                               |                           |
-| ---------                  | -----------                                                                                                                   | -------                   |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------|---------------------------|
 | `image.repository`         | KeyGenerator operator container image                                                                                         | `akirill0v/key_generator` |
 | `image.tag`                | KeyGenerator operator container image tag                                                                                     | `latest`                  |
 | `replicaCount`             | Number of KeyGenerator operator replicas to create (only 1 is supported)                                                      | `1`                       |
@@ -40,7 +39,7 @@ The following table lists the configurable parameters of the KeyGenerator chart 
 | `controller.port`          | Operator controller port to listen                                                                                            | `8080`                    |
 | `controller.configPath`    | Where is operator config file                                                                                                 | `/etc/k8s_config/`        |
 | `controller.configName`    | Config file name                                                                                                              | `default.yaml`            |
-| `config`                   | `controller.configName` file content (in yaml)                                                                                |                           |
+| `config`                   | `controller.configName` file content (in yaml)                                                                                | ``                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
