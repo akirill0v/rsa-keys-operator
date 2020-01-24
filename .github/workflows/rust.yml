@@ -35,7 +35,7 @@ jobs:
 
   build:
     needs: tests
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && ( github.ref == 'refs/heads/master' || github.ref == 'refs/tags/*' )
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
