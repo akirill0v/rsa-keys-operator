@@ -1,13 +1,11 @@
-use std::{
-    collections::BTreeMap,
-};
 use anyhow::Result;
 use base64::encode;
 use kube::{
-    api::{ Api, v1Secret, DeleteParams, PostParams, PatchParams },
+    api::{v1Secret, Api, DeleteParams, PatchParams, PostParams},
     client::APIClient,
 };
 use serde_json::json;
+use std::collections::BTreeMap;
 
 #[derive(Clone)]
 pub struct RsaSecret {
@@ -32,7 +30,9 @@ impl RsaSecret {
     /// Set filed named `name` value from `value`
     /// It's overwrite existing value
     pub async fn add_field(&mut self, name: &str, value: &str) -> Result<&mut Self> {
-        self.fields.entry(name.into()).or_insert_with(|| encode(&value));
+        self.fields
+            .entry(name.into())
+            .or_insert_with(|| encode(&value));
         Ok(self)
     }
 
@@ -51,11 +51,13 @@ impl RsaSecret {
             "data": serde_json::to_value(self.fields.clone())?,
         });
 
-        self.api.patch(
-            &self.name,
-            &PatchParams::default(),
-            serde_json::to_vec(&patch)?,
-        ).await?;
+        self.api
+            .patch(
+                &self.name,
+                &PatchParams::default(),
+                serde_json::to_vec(&patch)?,
+            )
+            .await?;
 
         Ok(self)
     }
@@ -73,10 +75,9 @@ impl RsaSecret {
             "data": {},
         });
 
-        self.api.create(
-            &PostParams::default(),
-            serde_json::to_vec(&p)?,
-        ).await?;
+        self.api
+            .create(&PostParams::default(), serde_json::to_vec(&p)?)
+            .await?;
 
         Ok(self)
     }
@@ -93,8 +94,10 @@ impl RsaSecret {
         if data.is_empty() {
             // NO one key contains - delete secret and return
             warn!("Secret {} is empty... remove it now", self.name);
-            self.api.delete(&self.name, &DeleteParams::default()).await?;
-            return Ok(self)
+            self.api
+                .delete(&self.name, &DeleteParams::default())
+                .await?;
+            return Ok(self);
         }
 
         let p = json!({
@@ -107,11 +110,9 @@ impl RsaSecret {
             "data": serde_json::to_value(data)?,
         });
 
-        self.api.replace(
-            &self.name,
-            &PostParams::default(),
-            serde_json::to_vec(&p)?,
-        ).await?;
+        self.api
+            .replace(&self.name, &PostParams::default(), serde_json::to_vec(&p)?)
+            .await?;
         Ok(self)
     }
 }

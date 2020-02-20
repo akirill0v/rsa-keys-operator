@@ -1,23 +1,23 @@
+use crate::*;
 use anyhow::Result;
+use chrono::prelude::*;
+use futures::StreamExt;
+use k8s_openapi::api::apps::v1::{DeploymentSpec, DeploymentStatus};
+use kube::{
+    api::{Api, Informer, Object, WatchEvent},
+    client::APIClient,
+    config::Configuration,
+};
 use prometheus::{
     default_registry,
     proto::MetricFamily,
     {IntCounter, IntCounterVec, IntGauge, IntGaugeVec},
 };
-use futures::StreamExt;
-use chrono::prelude::*;
-use k8s_openapi::api::apps::v1::{DeploymentSpec, DeploymentStatus};
-use kube::{
-    client::APIClient,
-    config::Configuration,
-    api::{Informer, WatchEvent, Object, Api},
-};
 use std::{
-    env,
     collections::BTreeMap,
+    env,
     sync::{Arc, RwLock},
 };
-use crate::*;
 
 pub type Deployment = Object<DeploymentSpec, DeploymentStatus>;
 
@@ -71,14 +71,18 @@ pub struct Controller {
 impl Controller {
     async fn new(client: APIClient, config: Settings) -> Result<Self> {
         let resource = Api::v1Deployment(client.clone());
-        let info = Informer::new(resource)
-            .timeout(15)
-            .init()
-            .await?;
+        let info = Informer::new(resource).timeout(15).init().await?;
         let metrics = Arc::new(RwLock::new(Metrics::new()));
         let state = Arc::new(RwLock::new(State::new()));
         let store = Store::new(client.clone(), config.clone()).await?;
-        Ok(Controller { config, info, metrics, state, client, store })
+        Ok(Controller {
+            config,
+            info,
+            metrics,
+            state,
+            client,
+            store,
+        })
     }
 
     /// Metrics getter
@@ -98,8 +102,8 @@ impl Controller {
         let mut deploys = self.info.poll().await?.boxed();
         while let Some(event) = deploys.next().await {
             match self.handle_event(event?).await {
-                Ok(_) => {},
-                Err(e) => {warn!("Cannot process service: {}", e)}
+                Ok(_) => {}
+                Err(e) => warn!("Cannot process service: {}", e),
             };
         }
         Ok(())
@@ -113,28 +117,30 @@ impl Controller {
                 let service_name = self.get_service_name(deploy.clone())?;
 
                 let generator = rsa_generator::Generator::new(self.config.rsa.bits, service_name)?;
-                self.store.handle_add(deploy.metadata.namespace.clone(), generator).await?;
+                self.store
+                    .handle_add(deploy.metadata.namespace.clone(), generator)
+                    .await?;
 
                 if self.config.volumes.mount {
-                    let mounter = mounter::Mounter::new(
-                        self.client.clone(),
-                        deploy,
-                        self.config.clone()
-                    ).await?;
+                    let mounter =
+                        mounter::Mounter::new(self.client.clone(), deploy, self.config.clone())
+                            .await?;
                     mounter.mount().await?;
                 }
 
                 self.metrics.write().unwrap().handled_events.inc();
-            },
+            }
             WatchEvent::Deleted(deploy) => {
                 info!("Deployment {:?} deleted...", deploy.metadata.name);
 
                 let service_name = self.get_service_name(deploy.clone())?;
-                self.store.handle_delete(deploy.metadata.namespace, service_name).await?;
+                self.store
+                    .handle_delete(deploy.metadata.namespace, service_name)
+                    .await?;
 
                 self.metrics.write().unwrap().handled_events.inc();
-            },
-            _ => {debug!("Unsupported event")},
+            }
+            _ => debug!("Unsupported event"),
         }
 
         self.state.write().unwrap().last_event = Utc::now();
@@ -142,8 +148,17 @@ impl Controller {
     }
 
     fn get_service_name(&self, deployment: Deployment) -> Result<String> {
-        deployment.metadata.annotations.clone().get(&self.config.annotation)
-            .ok_or_else(|| format!("deployment '{}' is not evrone service", deployment.metadata.name.clone()))
+        deployment
+            .metadata
+            .annotations
+            .clone()
+            .get(&self.config.annotation)
+            .ok_or_else(|| {
+                format!(
+                    "deployment '{}' is not evrone service",
+                    deployment.metadata.name.clone()
+                )
+            })
             .map_err(anyhow::Error::msg)
             .map(|_| deployment.metadata.name)
     }

@@ -1,5 +1,5 @@
+use config::{Config, ConfigError, Environment, File};
 use std::env;
-use config::{ConfigError, Config, File, Environment};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Settings {

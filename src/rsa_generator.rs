@@ -1,10 +1,10 @@
 use openssl::{
-    error::{ErrorStack},
-    rsa::Rsa,
-    pkey::PKey,
-    x509::{X509, X509Name},
+    error::ErrorStack,
     hash::MessageDigest,
     nid::Nid,
+    pkey::PKey,
+    rsa::Rsa,
+    x509::{X509Name, X509},
 };
 
 #[derive(Clone)]
