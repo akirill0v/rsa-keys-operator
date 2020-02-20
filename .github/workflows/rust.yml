@@ -1,29 +1,19 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - 'releases/**'
+    tags:
+      - v.*
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-
-  lints:
-    name: Lints
+  ci:
+    name: Lints, checks and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -48,3 +38,14 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+  build:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish viewer to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: akirill0v/key_generator
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
