@@ -43,7 +43,7 @@ impl RsaSecret {
 
     /// Update secret fields...
     pub async fn update(&self) -> Result<&Self> {
-        if let Err(_) = self.get().await {
+        if self.get().await.is_err() {
             let _ = self.create().await?;
         }
 
