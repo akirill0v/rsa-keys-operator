@@ -48,4 +48,4 @@ jobs:
           name: akirill0v/key_generator
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: '$GITHUB_SHA'
+          tag_names: true
