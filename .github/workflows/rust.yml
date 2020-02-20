@@ -36,16 +36,3 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
-  build:
-    name: Build docker image
-    needs: ci
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Publish Key-generator to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: akirill0v/key_generator
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tag_names: true
