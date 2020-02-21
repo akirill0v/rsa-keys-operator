@@ -1,7 +1,7 @@
 apiVersion: v2
 description: 'RSA keypair generator'
 name: key-generator
-version: v0.1.1
+version: 0.1.1
 appVersion: v0.1.1
 home: https://github.com/akirill0v/rsa-keys-operator
 sources:

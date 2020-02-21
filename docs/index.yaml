@@ -3,14 +3,14 @@ entries:
   key-generator:
   - apiVersion: v2
     appVersion: v0.1.1
-    created: "2020-02-21T09:46:17.823847423+04:00"
+    created: "2020-02-21T10:00:44.942213816+04:00"
     description: RSA keypair generator
-    digest: c001f08d882f3a2d86eaf53ab6954ebae1c4284bae53b1fa7eb3c63b3651e84f
+    digest: 33e3f41d058e58fbad8bab13f4425a764f1a6ada98ec3aafd2d12e61c24067cb
     home: https://github.com/akirill0v/rsa-keys-operator
     name: key-generator
     sources:
     - https://github.com/akirill0v/rsa-keys-operator
     urls:
-    - key-generator-v0.1.1.tgz
-    version: v0.1.1
-generated: "2020-02-21T09:46:17.82330345+04:00"
+    - key-generator-0.1.1.tgz
+    version: 0.1.1
+generated: "2020-02-21T10:00:44.941673033+04:00"
