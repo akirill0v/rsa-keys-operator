@@ -1,0 +1,16 @@
+apiVersion: v1
+entries:
+  key-generator:
+  - apiVersion: v2
+    appVersion: v0.1.1
+    created: "2020-02-21T09:46:17.823847423+04:00"
+    description: RSA keypair generator
+    digest: c001f08d882f3a2d86eaf53ab6954ebae1c4284bae53b1fa7eb3c63b3651e84f
+    home: https://github.com/akirill0v/rsa-keys-operator
+    name: key-generator
+    sources:
+    - https://github.com/akirill0v/rsa-keys-operator
+    urls:
+    - key-generator-v0.1.1.tgz
+    version: v0.1.1
+generated: "2020-02-21T09:46:17.82330345+04:00"
