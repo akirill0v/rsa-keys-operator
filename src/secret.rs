@@ -12,6 +12,7 @@ pub struct RsaSecret {
     /// A kube client for performing cluster actions
     api: Api<v1Secret>,
 
+    /// Name of the secret
     name: String,
 
     fields: BTreeMap<String, String>,

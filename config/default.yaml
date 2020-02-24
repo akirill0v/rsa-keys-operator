@@ -5,6 +5,10 @@ rsa:
   bits: 2048
 secrets:
   public_name: public-rsa-tokens
+  public_namespaces:
+    - staging
+    - default
+    - kube-system
 volumes:
   mount: true
   public:

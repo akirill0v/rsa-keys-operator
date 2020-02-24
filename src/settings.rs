@@ -18,6 +18,7 @@ pub struct Rsa {
 #[derive(Debug, Deserialize, Clone)]
 pub struct Secrets {
     pub public_name: String,
+    pub public_namespaces: Vec<String>,
 }
 
 #[derive(Debug, Deserialize, Clone)]

@@ -63,6 +63,9 @@ config:
     bits: 2048
   secrets:
     public_name: public-rsa-tokens
+    public_namespaces:
+      - default
+      - kube-system
   volumes:
     mount: true
     public:

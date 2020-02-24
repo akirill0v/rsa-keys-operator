@@ -35,13 +35,6 @@ impl Store {
         )
         .await?;
 
-        let mut public_secret = RsaSecret::new(
-            self.client.clone(),
-            self.config.secrets.public_name.clone(),
-            Some("default".into()),
-        )
-        .await?;
-
         private_secret
             .add_field("private.pem", from_utf8(&generator.private_key)?)
             .await?
@@ -50,11 +43,20 @@ impl Store {
 
         let key_name = format!("{}.pem", generator.name);
 
-        public_secret
-            .add_field(&key_name, from_utf8(&generator.public_key)?)
-            .await?
-            .update()
+        for ns in self.config.secrets.public_namespaces.iter() {
+            let mut public_secret = RsaSecret::new(
+                self.client.clone(),
+                self.config.secrets.public_name.clone(),
+                Some(ns.into()),
+            )
             .await?;
+
+            public_secret
+                .add_field(&key_name, from_utf8(&generator.public_key)?)
+                .await?
+                .update()
+                .await?;
+        }
 
         Ok(())
     }
@@ -67,16 +69,18 @@ impl Store {
     ) -> Result<()> {
         info!("Delete token fields for <{}>", service_name);
 
-        let public_secret = RsaSecret::new(
-            self.client.clone(),
-            self.config.secrets.public_name.clone(),
-            Some("default".into()),
-        )
-        .await?;
-
         let key_name = format!("{}.pem", service_name);
 
-        public_secret.clean(vec![key_name]).await?;
+        for ns in self.config.secrets.public_namespaces.iter() {
+            let public_secret = RsaSecret::new(
+                self.client.clone(),
+                self.config.secrets.public_name.clone(),
+                Some(ns.into()),
+            )
+            .await?;
+
+            public_secret.clean(vec![key_name.clone()]).await?;
+        }
 
         let private_secret = RsaSecret::new(
             self.client.clone(),
