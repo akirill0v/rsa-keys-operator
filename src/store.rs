@@ -31,7 +31,7 @@ impl Store {
         let mut private_secret = RsaSecret::new(
             self.client.clone(),
             utils::secret_name(generator.name.clone()),
-            namespace,
+            namespace.clone(),
         )
         .await?;
 
@@ -43,21 +43,20 @@ impl Store {
 
         let key_name = format!("{}.pem", generator.name);
 
-        for ns in self.config.secrets.public_namespaces.iter() {
-            let mut public_secret = RsaSecret::new(
-                self.client.clone(),
-                self.config.secrets.public_name.clone(),
-                Some(ns.into()),
-            )
+        // For current namespace update public secret
+
+        let mut public_secret = RsaSecret::new(
+            self.client.clone(),
+            self.config.secrets.public_name.clone(),
+            namespace,
+        )
+        .await?;
+
+        public_secret
+            .add_field(&key_name, from_utf8(&generator.public_key)?)
+            .await?
+            .update()
             .await?;
-
-            public_secret
-                .add_field(&key_name, from_utf8(&generator.public_key)?)
-                .await?
-                .update()
-                .await?;
-        }
-
         Ok(())
     }
 
@@ -71,16 +70,14 @@ impl Store {
 
         let key_name = format!("{}.pem", service_name);
 
-        for ns in self.config.secrets.public_namespaces.iter() {
-            let public_secret = RsaSecret::new(
-                self.client.clone(),
-                self.config.secrets.public_name.clone(),
-                Some(ns.into()),
-            )
-            .await?;
+        let public_secret = RsaSecret::new(
+            self.client.clone(),
+            self.config.secrets.public_name.clone(),
+            namespace.clone(),
+        )
+        .await?;
 
-            public_secret.clean(vec![key_name.clone()]).await?;
-        }
+        public_secret.clean(vec![key_name.clone()]).await?;
 
         let private_secret = RsaSecret::new(
             self.client.clone(),
