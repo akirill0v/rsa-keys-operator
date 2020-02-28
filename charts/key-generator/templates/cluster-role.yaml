@@ -10,7 +10,7 @@ rules:
   resources:
   - services
   - secrets
-  verbs: ["create", "delete", "get", "patch", "list", "watch"]
+  verbs: ["create", "update", "delete", "get", "patch", "list", "watch"]
 - apiGroups:
   - apps
   resources:
