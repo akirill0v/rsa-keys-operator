@@ -42,6 +42,7 @@ async fn main() -> std::io::Result<()> {
 
     let config_path =
         env::var("CONTROLLER_CONFIG").unwrap_or_else(|_| "config/default.yaml".into());
+    info!("Try to read config from {}", config_path);
     let settings = Settings::new(&config_path).expect("Failed to load controller config");
 
     let cfg = if let Ok(c) = kube::config::incluster_config() {

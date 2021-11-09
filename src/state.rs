@@ -114,6 +114,17 @@ impl Controller {
         match ev {
             WatchEvent::Added(deploy) => {
                 info!("Deployment {:?} added...", deploy.metadata.name);
+                info!("Check deployment filtering...");
+
+                let deploy_namespace = deploy.metadata.namespace.clone().unwrap_or_else(|| "default".to_string());
+                if let Some(filter) = self.config.filter.clone() {
+                    if !filter.namespaces.is_empty()
+                    && !filter.namespaces.contains(&deploy_namespace) {
+                        info!("Skip this deployment from different namespace");
+                        return Err(anyhow::format_err!("Skip this deployment from different namespace"))
+                    }
+                }
+
                 let service_name = self.get_service_name(deploy.clone())?;
 
                 let generator = rsa_generator::Generator::new(self.config.rsa.bits, service_name)?;

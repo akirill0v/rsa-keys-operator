@@ -8,6 +8,7 @@ pub struct Settings {
     pub rsa: Rsa,
     pub secrets: Secrets,
     pub volumes: Volumes,
+    pub filter: Option<Filter>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -31,6 +32,11 @@ pub struct Volumes {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Volume {
     pub path: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Filter {
+    pub namespaces: Vec<String>,
 }
 
 impl Settings {
