@@ -116,12 +116,19 @@ impl Controller {
                 info!("Deployment {:?} added...", deploy.metadata.name);
                 info!("Check deployment filtering...");
 
-                let deploy_namespace = deploy.metadata.namespace.clone().unwrap_or_else(|| "default".to_string());
+                let deploy_namespace = deploy
+                    .metadata
+                    .namespace
+                    .clone()
+                    .unwrap_or_else(|| "default".to_string());
                 if let Some(filter) = self.config.filter.clone() {
                     if !filter.namespaces.is_empty()
-                    && !filter.namespaces.contains(&deploy_namespace) {
+                        && !filter.namespaces.contains(&deploy_namespace)
+                    {
                         info!("Skip this deployment from different namespace");
-                        return Err(anyhow::format_err!("Skip this deployment from different namespace"))
+                        return Err(anyhow::format_err!(
+                            "Skip this deployment from different namespace"
+                        ));
                     }
                 }
 
