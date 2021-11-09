@@ -121,9 +121,11 @@ impl Controller {
                     .namespace
                     .clone()
                     .unwrap_or_else(|| "default".to_string());
-                let deploy_name = deploy
-                    .metadata.name.clone();
-                info!("Deployment: {} with namespace: {}", deploy_name, &deploy_namespace);
+                let deploy_name = deploy.metadata.name.clone();
+                info!(
+                    "Deployment: {} with namespace: {}",
+                    deploy_name, &deploy_namespace
+                );
                 if let Some(filter) = self.config.filter.clone() {
                     if !filter.namespaces.is_empty()
                         && !filter.namespaces.contains(&deploy_namespace)

@@ -1,9 +1,12 @@
 use crate::{settings::Settings, state::Deployment, utils};
 use anyhow::Result;
-use k8s_openapi::{api::core::v1::PodSpec, serde_json};
-use kube::{api::{Api, PatchParams, PatchStrategy}, client::APIClient};
-use serde_json::{json, value::Value};
 use json_patch::merge;
+use k8s_openapi::{api::core::v1::PodSpec, serde_json};
+use kube::{
+    api::{Api, PatchParams, PatchStrategy},
+    client::APIClient,
+};
+use serde_json::{json, value::Value};
 
 #[derive(Clone)]
 pub struct Mounter {
