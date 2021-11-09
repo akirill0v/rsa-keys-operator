@@ -44,6 +44,7 @@ impl Store {
         let key_name = format!("{}.pem", generator.name);
 
         // For current namespace update public secret
+        info!("For current namespace update public secret...");
 
         let mut public_secret = RsaSecret::new(
             self.client.clone(),
@@ -52,6 +53,7 @@ impl Store {
         )
         .await?;
 
+        info!("Add field to public secret...");
         public_secret
             .add_field(&key_name, from_utf8(&generator.public_key)?)
             .await?

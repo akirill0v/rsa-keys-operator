@@ -30,6 +30,7 @@ chrono = { version = "0.4.10", features = ["serde"] }
 prometheus = "0.7.0"
 futures = "0.3.1"
 tokio = "0.2.9"
+json-patch = "0.2.6"
 openssl = "*"
 
 # [profile.release]

@@ -121,6 +121,9 @@ impl Controller {
                     .namespace
                     .clone()
                     .unwrap_or_else(|| "default".to_string());
+                let deploy_name = deploy
+                    .metadata.name.clone();
+                info!("Deployment: {} with namespace: {}", deploy_name, &deploy_namespace);
                 if let Some(filter) = self.config.filter.clone() {
                     if !filter.namespaces.is_empty()
                         && !filter.namespaces.contains(&deploy_namespace)
@@ -132,6 +135,7 @@ impl Controller {
                     }
                 }
 
+                info!("Fetch service name...");
                 let service_name = self.get_service_name(deploy.clone())?;
 
                 let generator = rsa_generator::Generator::new(self.config.rsa.bits, service_name)?;
@@ -140,12 +144,17 @@ impl Controller {
                     .await?;
 
                 if self.config.volumes.mount {
+                    info!("Initialize mounter...");
                     let mounter =
                         mounter::Mounter::new(self.client.clone(), deploy, self.config.clone())
                             .await?;
+                    info!("Mount...");
                     mounter.mount().await?;
+                } else {
+                    info!("Mount is not set... skipping...")
                 }
 
+                info!("Write to metrics...");
                 self.metrics.write().unwrap().handled_events.inc();
             }
             WatchEvent::Deleted(deploy) => {

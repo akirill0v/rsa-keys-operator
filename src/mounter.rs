@@ -1,11 +1,9 @@
 use crate::{settings::Settings, state::Deployment, utils};
 use anyhow::Result;
 use k8s_openapi::{api::core::v1::PodSpec, serde_json};
-use kube::{
-    api::{Api, PatchParams},
-    client::APIClient,
-};
+use kube::{api::{Api, PatchParams, PatchStrategy}, client::APIClient};
 use serde_json::{json, value::Value};
+use json_patch::merge;
 
 #[derive(Clone)]
 pub struct Mounter {
@@ -89,9 +87,8 @@ impl Mounter {
         let containers_with_volumes: Vec<Value> = containers
             .into_iter()
             .map(|c| {
-                json!({
-                    "name": c.name,
-                    "image": c.image,
+                let mut original = json!(c);
+                let patch = json!({
                     "volumeMounts": [{
                         "name": utils::secret_name(self.deployment.metadata.name.clone()),
                         "mountPath": self.settings.volumes.private.path,
@@ -99,7 +96,9 @@ impl Mounter {
                         "name": self.settings.secrets.public_name,
                         "mountPath": self.settings.volumes.public.path,
                     }],
-                })
+                });
+                merge(&mut original, &patch);
+                original
             })
             .collect();
 
