@@ -1,4 +1,4 @@
-ARG RUST_VERSION=1.40.0
+ARG RUST_VERSION=1.51.0
 FROM ekidd/rust-musl-builder:$RUST_VERSION-openssl11 AS build
 ARG rust_args="--target x86_64-unknown-linux-musl --release"
 WORKDIR /home/rust/src
