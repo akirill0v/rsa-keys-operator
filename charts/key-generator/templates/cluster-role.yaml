@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ template "key_generator.fullname" . }}
+  name: {{ template "key_generator.namespaced.fullname" . }}
   labels:
     {{- include "key_generator.labels" . | nindent 4 }}
 rules:
@@ -37,13 +37,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "key_generator.fullname" . }}
+  name: {{ template "key_generator.namespaced.fullname" . }}
   labels:
     {{- include "key_generator.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "key_generator.fullname" . }}
+  name: {{ template "key_generator.namespaced.fullname" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "key_generator.serviceAccountName" . }}

@@ -20,6 +20,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a namespaced fullname.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "key_generator.namespaced.fullname" -}}
+{{- $originalName := include "key_generator.fullname" . | trunc 50 -}}
+{{- printf "%s-%s" $originalName .Release.Namespace | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "key_generator.serviceAccountName" -}}
